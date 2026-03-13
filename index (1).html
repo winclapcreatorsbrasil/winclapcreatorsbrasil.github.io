@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Winclap Creators Brasil — Primeiros Passos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg:      #0b0b12;
+  --card:    #13131e;
+  --card2:   #1a1a2a;
+  --border:  rgba(255,255,255,0.09);
+  --accent:  #9b51e0;
+  --lime:    #c6ff00;
+  --pink:    #f472b6;
+  --text:    #f0f0f5;
+  --muted:   #9090a8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg); color: var(--text);
+  overflow-x: hidden; -webkit-font-smoothing: antialiased; line-height: 1.6;
+}
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: .3;
+}
+
+.wrap { width: 100%; max-width: 560px; margin: 0 auto; padding: 0 20px 100px; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+
+/* NAV */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  background: rgba(11,11,18,.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.nav-logo { text-decoration: none; }
+.nav-logo-text { font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--text); letter-spacing: -.01em; }
+.nav-logo-accent { color: var(--accent); font-weight: 400; }
+.nav-logo img { height: 26px; display: block; }
+
+.nav-hamburger {
+  display: flex; flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 4px; background: none; border: none;
+  flex-shrink: 0;
+}
+.nav-hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text); border-radius: 2px;
+  transition: all .3s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-drawer {
+  display: none;
+  position: fixed; top: 57px; left: 0; right: 0; z-index: 99;
+  background: rgba(11,11,18,.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px 20px;
+  flex-direction: column; gap: 0;
+}
+.nav-drawer.open { display: flex; }
+.nav-drawer a {
+  font-size: .95rem; font-weight: 500; color: var(--muted);
+  text-decoration: none; padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  transition: color .2s;
+}
+.nav-drawer a:last-child { border-bottom: none; }
+.nav-drawer a:hover { color: var(--text); }
+
+.nav-links {
+  display: none; gap: 20px; list-style: none;
+}
+.nav-links a {
+  font-size: .8rem; font-weight: 500; color: var(--muted);
+  text-decoration: none; letter-spacing: .02em; transition: color .2s; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-btn {
+  background: var(--accent); color: #fff;
+  padding: 10px 20px; border-radius: 100px;
+  font-size: .8rem; font-weight: 600;
+  letter-spacing: .03em; text-decoration: none; text-transform: uppercase;
+  white-space: nowrap; flex-shrink: 0;
+}
+
+/* HERO */
+.hero { position: relative; padding: 56px 0 44px; text-align: center; overflow: hidden; }
+.hero-glow {
+  position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 380px; height: 380px;
+  background: radial-gradient(ellipse, rgba(155,81,224,.22), transparent 70%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 100px; padding: 8px 18px 8px 12px;
+  margin-bottom: 24px; font-size: .82rem; color: var(--muted);
+}
+.hero-badge .dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  background: var(--lime); box-shadow: 0 0 8px var(--lime);
+  animation: pulse 2s ease infinite;
+}
+.hero h1 {
+  font-family: 'Lora', serif;
+  font-size: 2.6rem; font-weight: 700; line-height: 1.1; letter-spacing: -.02em; margin-bottom: 18px;
+}
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero h1 .lime { color: var(--lime); font-style: normal; }
+.hero-sub { font-size: 1rem; color: var(--muted); line-height: 1.75; max-width: 340px; margin: 0 auto 32px; font-weight: 300; }
+.hero-cta {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--accent); color: #fff; font-weight: 600; font-size: 1rem;
+  padding: 16px 28px; border-radius: 100px; text-decoration: none;
+  box-shadow: 0 0 32px rgba(155,81,224,.4); width: 100%; transition: opacity .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.hero-cta:active { opacity: .85; }
+
+/* STATS */
+.stats-bar {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 3px; margin: 36px 0 0;
+  border-radius: 20px 20px 0 0; overflow: hidden;
+  border: 1px solid var(--border); border-bottom: none;
+}
+.stat-item { background: var(--card); padding: 20px 12px; text-align: center; }
+.stat-num { font-family: 'Lora', serif; font-size: 1.9rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+.stat-lbl { font-size: .78rem; color: var(--muted); line-height: 1.4; }
+
+/* IMG FEATURE */
+.img-block { margin: 0 -20px; }
+.img-feature {
+  width: 100%; height: 280px; overflow: hidden;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.img-feature img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+.img-feature::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(11,11,18,.45), transparent 55%);
+}
+
+/* TRIO */
+.img-trio {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  grid-template-rows: 130px 130px;
+  gap: 3px;
+  overflow: hidden;
+  border: 1px solid var(--border); border-top: none;
+}
+.trio-cell { overflow: hidden; position: relative; cursor: pointer; }
+.trio-cell:first-child { grid-row: span 2; }
+.trio-cell img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .5s ease, filter .5s ease;
+}
+.trio-cell::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(155,81,224,0);
+  transition: background .4s ease;
+}
+.trio-cell:hover img { transform: scale(1.06); filter: brightness(1.1); }
+.trio-cell:hover::after { background: rgba(155,81,224,.08); }
+
+.img-trio-cap {
+  height: 0; border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 20px 20px; margin: 0;
+}
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 44px 0; }
+
+/* TAGS & TITLES */
+.tag {
+  display: inline-block;
+  background: rgba(155,81,224,.12); border: 1px solid rgba(155,81,224,.3);
+  color: var(--accent); border-radius: 100px;
+  padding: 5px 14px; font-size: .72rem; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px;
+}
+.tag.lime { background: rgba(198,255,0,.08); border-color: rgba(198,255,0,.25); color: var(--lime); }
+.sec-title { font-family: 'Lora', serif; font-size: 1.75rem; font-weight: 700; line-height: 1.15; letter-spacing: -.01em; margin-bottom: 22px; }
+.sec-title em { font-style: italic; color: var(--accent); }
+.sec-body { font-size: .95rem; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+
+/* BRANDS */
+.brands-lbl { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.brands-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.brand-pill {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 100px; padding: 8px 16px; font-size: .82rem; font-weight: 500; color: var(--muted);
+  transition: border-color .2s, color .2s;
+}
+.brand-pill:hover { border-color: rgba(155,81,224,.4); color: var(--text); }
+
+/* PROCESS */
+.proc-list { display: flex; flex-direction: column; gap: 3px; }
+.proc-step {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--card); border: 1px solid var(--border); padding: 20px 18px;
+}
+.proc-step:first-child { border-radius: 18px 18px 0 0; }
+.proc-step:last-child  { border-radius: 0 0 18px 18px; }
+.proc-step:not(:first-child) { border-top: none; }
+.proc-left {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: rgba(155,81,224,.1); border: 1px solid rgba(155,81,224,.2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+}
+.p-num  { font-size: .6rem; font-weight: 700; color: var(--accent); letter-spacing: .06em; }
+.p-icon { font-size: 1.1rem; line-height: 1; }
+.proc-step h4 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+.proc-step p  { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+
+/* HOW */
+.how-list { display: flex; flex-direction: column; gap: 3px; }
+.how-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--card); border: 1px solid var(--border); padding: 22px 18px;
+}
+.how-item:first-child { border-radius: 18px 18px 0 0; }
+.how-item:last-child  { border-radius: 0 0 18px 18px; }
+.how-item:not(:first-child) { border-top: none; }
+.how-num {
+  width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+  background: rgba(155,81,224,.12); border: 1px solid rgba(155,81,224,.25);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Lora', serif; font-weight: 700; font-size: 1rem; color: var(--accent);
+}
+.how-item h4 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+.how-item p  { font-size: .9rem; color: var(--muted); line-height: 1.65; }
+.how-item a  { color: var(--accent); font-weight: 600; text-decoration: none; }
+.how-item a:hover { text-decoration: underline; }
+
+/* FATURAMENTO */
+.fat-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+.fat-header {
+  background: linear-gradient(135deg, rgba(155,81,224,.18), rgba(155,81,224,.04));
+  border-bottom: 1px solid var(--border);
+  padding: 20px; display: flex; align-items: center; gap: 14px;
+}
+.fat-hicon { font-size: 1.6rem; }
+.fat-header h3 { font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 700; }
+.fat-header p  { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+.fat-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.fat-row {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px 14px;
+}
+.fat-ricon {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  background: rgba(155,81,224,.1);
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.fat-row h5 { font-size: .95rem; font-weight: 600; margin-bottom: 6px; }
+.fat-row p  { font-size: .88rem; color: var(--muted); line-height: 1.65; }
+.fat-row code {
+  display: block; background: rgba(155,81,224,.15); color: var(--accent);
+  border-radius: 8px; padding: 8px 12px; font-size: .8rem; font-family: monospace;
+  margin-top: 8px; word-break: break-all; line-height: 1.5;
+}
+.fat-note { font-size: .8rem; color: var(--muted); margin-top: 8px; }
+
+/* NF zoom modal */
+.nf-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 10px; font-size: .82rem; color: var(--accent);
+  cursor: pointer; background: none; border: none; padding: 0;
+  font-family: inherit;
+}
+.nf-btn:hover { text-decoration: underline; }
+.nf-modal {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.nf-modal.open { display: flex; }
+.nf-modal img {
+  max-width: 100%; max-height: 90vh;
+  border-radius: 12px; border: 1px solid var(--border);
+  box-shadow: 0 0 60px rgba(0,0,0,.8);
+}
+.nf-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  color: #fff; font-size: 1.2rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.fat-highlight {
+  background: rgba(198,255,0,.05); border: 1px solid rgba(198,255,0,.18);
+  border-radius: 14px; padding: 16px;
+}
+.fat-highlight p { font-size: .92rem; line-height: 1.7; }
+.fat-highlight strong { color: var(--lime); }
+
+/* CNPJ */
+.cnpj-notice {
+  background: rgba(198,255,0,.04); border: 1px solid rgba(198,255,0,.15);
+  border-radius: 14px; padding: 16px; margin-bottom: 20px;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.cnpj-notice p { font-size: .9rem; line-height: 1.7; color: var(--muted); }
+.cnpj-notice strong { color: var(--lime); }
+.cnpj-notice a { color: var(--lime); }
+
+/* PRAZOS */
+.prazo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.prazo-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 18px; padding: 22px 14px; text-align: center;
+}
+.prazo-day   { font-family: 'Lora', serif; font-size: 2.2rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+.prazo-label { font-size: .8rem; color: var(--muted); line-height: 1.45; }
+.prazo-sub   { font-size: .72rem; color: var(--accent); font-weight: 600; letter-spacing: .04em; margin-top: 4px; text-transform: uppercase; }
+
+/* ALERT CARDS */
+.alert-card { border-radius: 16px; padding: 18px 16px; display: flex; gap: 14px; align-items: flex-start; }
+.alert-card.pink   { background: rgba(244,114,182,.05); border: 1px solid rgba(244,114,182,.2); }
+.alert-card.purple { background: rgba(155,81,224,.06);  border: 1px solid rgba(155,81,224,.2);  }
+.alert-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+.alert-card h4 { font-family: 'Lora', serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.alert-card p  { font-size: .9rem; color: var(--muted); line-height: 1.7; }
+.alert-card strong { color: var(--text); }
+.pink-em { color: var(--pink) !important; }
+
+/* FAQ */
+.acc-list { border-top: 1px solid var(--border); }
+.acc-item { border-bottom: 1px solid var(--border); }
+.acc-trigger {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 0; cursor: pointer; gap: 16px; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.acc-trigger span { font-size: .95rem; font-weight: 500; line-height: 1.45; flex: 1; }
+.acc-icon {
+  width: 30px; height: 30px; border: 1px solid rgba(255,255,255,.12);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  color: var(--accent); flex-shrink: 0; font-size: 1.1rem;
+  transition: transform .3s, background .2s; line-height: 1;
+}
+.acc-item.open .acc-icon { transform: rotate(45deg); background: rgba(155,81,224,.15); }
+.acc-body { display: none; padding-bottom: 20px; font-size: .92rem; color: var(--muted); line-height: 1.75; }
+.acc-item.open .acc-body { display: block; }
+
+/* CTA BOTTOM */
+.cta-bottom {
+  background: var(--card); border: 1px solid rgba(155,81,224,.2);
+  border-radius: 24px; padding: 40px 24px;
+  text-align: center; position: relative; overflow: hidden; margin-top: 56px;
+}
+.cta-bottom::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(155,81,224,.12), transparent 65%);
+  pointer-events: none;
+}
+.cta-bottom h2 {
+  font-family: 'Lora', serif; font-size: 1.8rem; font-weight: 700;
+  line-height: 1.15; margin-bottom: 12px; position: relative;
+}
+.cta-bottom h2 em { font-style: italic; color: var(--accent); }
+.cta-sub { color: var(--muted); font-size: .95rem; line-height: 1.65; margin-bottom: 28px; position: relative; }
+.cta-url { display: block; font-size: .75rem; color: var(--muted); margin-top: 14px; letter-spacing: .03em; }
+
+/* FOOTER */
+footer {
+  margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 20px; font-size: .82rem; color: var(--muted); text-align: center;
+}
+.footer-logo img { height: 24px; display: block; opacity: .7; }
+.footer-social { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.footer-link {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--muted); text-decoration: none; font-size: .85rem; transition: color .2s;
+}
+.footer-link:hover { color: #fff; }
+.footer-link svg { width: 16px; height: 16px; flex-shrink: 0; opacity: .7; }
+.footer-link:hover svg { opacity: 1; }
+
+[id] { scroll-margin-top: 70px; }
+
+@media (max-width: 359px) {
+  html { font-size: 14px; }
+  .hero h1 { font-size: 2rem; }
+  .nav-logo img { height: 20px; }
+  .stat-num { font-size: 1.5rem; }
+}
+@media (min-width: 560px) {
+  .wrap { max-width: 600px; padding: 0 32px 100px; }
+  .img-block { margin: 0 -32px; }
+  .hero { padding: 64px 0 52px; }
+  .hero h1 { font-size: 3rem; }
+  .hero-sub { max-width: 420px; font-size: 1.05rem; }
+  .hero-cta { width: auto; display: inline-flex; padding: 17px 34px; font-size: 1.05rem; }
+  .sec-title { font-size: 2rem; }
+  .stat-num { font-size: 2.1rem; }
+  .img-feature { height: 340px; }
+  .img-trio { grid-template-rows: 155px 155px; }
+  .footer-social { flex-direction: row; gap: 20px; }
+  .prazo-day { font-size: 2.6rem; }
+}
+@media (min-width: 768px) {
+  .wrap { max-width: 720px; padding: 0 40px 120px; }
+  .img-block { margin: 0 -40px; }
+  .nav { padding: 18px 40px; }
+  .nav-logo img { height: 28px; }
+  .nav-btn { padding: 11px 26px; font-size: .85rem; }
+  .nav-hamburger { display: none; }
+  .nav-links { display: flex; }
+  .hero { padding: 80px 0 64px; }
+  .hero h1 { font-size: 3.6rem; }
+  .hero-sub { max-width: 480px; font-size: 1.1rem; }
+  .stats-bar { grid-template-columns: repeat(4, 1fr); }
+  .stat-num { font-size: 2.2rem; }
+  .img-feature { height: 380px; }
+  .img-trio { grid-template-rows: 170px 170px; }
+  .sec-title { font-size: 2.2rem; }
+  .divider { margin: 52px 0; }
+  .footer-social { flex-direction: row; gap: 20px; }
+}
+@media (min-width: 1024px) {
+  .wrap { max-width: 860px; padding: 0 48px 120px; }
+  .img-block { margin: 0 -48px; }
+  .nav { padding: 20px 48px; }
+  .hero { padding: 96px 0 72px; }
+  .hero h1 { font-size: 4.2rem; }
+  .img-feature { height: 420px; }
+  .img-trio { grid-template-rows: 190px 190px; }
+  .sec-title { font-size: 2.5rem; }
+  footer { flex-direction: row; justify-content: space-between; padding-top: 32px; }
+  .footer-social { flex-direction: row; gap: 24px; }
+}
+@media (min-width: 1280px) {
+  .wrap { max-width: 960px; }
+  .hero h1 { font-size: 4.6rem; }
+  .sec-title { font-size: 2.7rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NF Modal -->
+<div class="nf-modal" id="nfModal" onclick="closeNF(event)">
+  <button class="nf-close" onclick="document.getElementById('nfModal').classList.remove('open')">✕</button>
+  <img src="nota-fiscal.png" alt="Exemplo de Nota Fiscal" loading="lazy">
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-text">Winclap<span class="nav-logo-accent"> Studio</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Quem Somos</a></li>
+    <li><a href="#como-funciona">Como Funciona</a></li>
+    <li><a href="#cadastro">Cadastro</a></li>
+    <li><a href="#faturamento">Faturamento</a></li>
+    <li><a href="#faq">Dúvidas</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="https://creator.brkaway.co/apply/winclap" target="_blank" class="nav-btn">Cadastrar-se</a>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer" id="navDrawer">
+  <a href="#sobre" onclick="toggleMenu()">Quem Somos</a>
+  <a href="#como-funciona" onclick="toggleMenu()">Como Funciona</a>
+  <a href="#cadastro" onclick="toggleMenu()">Cadastro</a>
+  <a href="#faturamento" onclick="toggleMenu()">Faturamento</a>
+  <a href="#faq" onclick="toggleMenu()">Dúvidas</a>
+  <a href="https://creator.brkaway.co/apply/winclap" target="_blank">Cadastrar-se →</a>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" id="sobre">
+    <div class="hero-glow"></div>
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Winclap Creative Studio · Brasil 🇧🇷
+    </div>
+    <h1>Seja bem-vindo à nossa<br><em>Comunidade</em> de<br><span class="lime">Creators</span></h1>
+    <p class="hero-sub">Transforme seu talento em oportunidades reais com marcas globais. Você cria, a gente cuida de todo o resto.</p>
+    <a href="https://creator.brkaway.co/apply/winclap" target="_blank" class="hero-cta">
+      Cadastre-se gratuitamente
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+    <!-- STATS -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-num">3700</div>
+        <div class="stat-lbl">creators na comunidade</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">35K+</div>
+        <div class="stat-lbl">criativos produzidos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100+</div>
+        <div class="stat-lbl">marcas parceiras</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">15+</div>
+        <div class="stat-lbl">países</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMAGENS -->
+  <div class="img-block">
+    <div class="img-trio" style="border-top: 1px solid var(--border); border-radius: 20px 20px 0 0; overflow: hidden;">
+      <div class="trio-cell">
+        <img src="img4.jpg" alt="Creator gravando" loading="lazy">
+      </div>
+      <div class="trio-cell">
+        <img src="img3.jpg" alt="Setup de criação" loading="lazy">
+      </div>
+      <div class="trio-cell">
+        <img src="img2.jpg" alt="São Paulo" loading="lazy">
+      </div>
+    </div>
+    <div class="img-trio-cap"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SOBRE A WINCLAP -->
+  <section id="campanhas">
+    <span class="tag">Quem somos</span>
+    <h2 class="sec-title">Uma empresa de <em>Growth Transformation</em></h2>
+    <p class="sec-body">Conectamos criadores com as marcas mais relevantes do mercado para co-criar conteúdo autêntico, criativo e de alta performance.</p>
+    <p class="sec-body">A Winclap Creators Community faz parte da Winclap — atuando com as marcas mais inovadoras da América Latina e América do Norte. Ao entrar, você acessa oportunidades, suporte, capacitações e uma comunidade que acredita no seu crescimento.</p>
+
+    <div style="margin: 0 -20px 28px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border);">
+      <img src="img1.jpeg" alt="Time Winclap" style="width:100%; display:block; object-fit:cover; height:260px;" loading="lazy">
+    </div>
+
+    <p class="brands-lbl">Marcas que já trabalhamos</p>
+    <div class="brands-row">
+      <span class="brand-pill">Mercado Livre</span>
+      <span class="brand-pill">Hering</span>
+      <span class="brand-pill">PicPay</span>
+      <span class="brand-pill">Sam's Club</span>
+      <span class="brand-pill">Santander</span>
+      <span class="brand-pill">Natura</span>
+      <span class="brand-pill">Hyundai</span>
+      <span class="brand-pill">Ford</span>
+      <span class="brand-pill">iFood</span>
+      <span class="brand-pill">Amazon</span>
+      <span class="brand-pill">Mitsubishi</span>
+      <span class="brand-pill">Black+Decker</span>
+      <span class="brand-pill">Arezzo</span>
+      <span class="brand-pill">Schutz</span>
+      <span class="brand-pill">Mercado Pago</span>
+      <span class="brand-pill">Rappi</span>
+      <span class="brand-pill">InDrive</span>
+      <span class="brand-pill">Nomad</span>
+      <span class="brand-pill">Reserva</span>
+      <span class="brand-pill">Instagram</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- DO BRIEFING AO PAGAMENTO -->
+  <section id="como-funciona">
+    <span class="tag">Como funciona</span>
+    <h2 class="sec-title">Do briefing ao pagamento, em <em>6 etapas simples</em></h2>
+    <div class="proc-list">
+      <div class="proc-step">
+        <div class="proc-left"><span class="p-num">01</span><span class="p-icon">📩</span></div>
+        <div>
+          <h4>Proposta</h4>
+          <p>Você recebe uma proposta personalizada de criação de conteúdo.</p>
+        </div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-left"><span class="p-num">02</span><span class="p-icon">📝</span></div>
+        <div>
+          <h4>Roteiro</h4>
+          <p>Nossa equipe aprova o roteiro do projeto junto com você.</p>
+        </div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-left"><span class="p-num">03</span><span class="p-icon">🎬</span></div>
+        <div>
+          <h4>Produção</h4>
+          <p>É hora de dar vida ao conteúdo com toda a sua criatividade.</p>
+        </div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-left"><span class="p-num">04</span><span class="p-icon">💬</span></div>
+        <div>
+          <h4>Feedback</h4>
+          <p>Trocamos feedbacks para garantir o melhor resultado final.</p>
+        </div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-left"><span class="p-num">05</span><span class="p-icon">✅</span></div>
+        <div>
+          <h4>Entrega Final</h4>
+          <p>Com o conteúdo aprovado, realizamos a entrega oficial.</p>
+        </div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-left"><span class="p-num">06</span><span class="p-icon">💸</span></div>
+        <div>
+          <h4>Pagamento</h4>
+          <p>Após a entrega, o pagamento cai direto na sua conta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- COMECE AGORA EM 3 PASSOS -->
+  <section id="cadastro">
+    <span class="tag lime">Cadastro</span>
+    <h2 class="sec-title">Comece agora em <em>3 passos</em></h2>
+    <div class="how-list">
+      <div class="how-item">
+        <div class="how-num">1</div>
+        <div>
+          <h4>Acesse o link e crie sua conta</h4>
+          <p>O cadastro é gratuito e leva menos de 5 minutos. Acesse <a href="https://creator.brkaway.co/apply/winclap" target="_blank">creator.brkaway.co/apply/winclap</a> e preencha seus dados.</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">2</div>
+        <div>
+          <h4>Complete seu perfil com pelo menos 3 vídeos</h4>
+          <p>Adicione estado, cidade, hobbies, tipos de conteúdo e 3 exemplos de vídeos que já produziu. Quanto mais completo, maiores suas chances!</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">3</div>
+        <div>
+          <h4>Aguarde e seja descoberto</h4>
+          <p>Seu perfil fica visível para as marcas parceiras. Quando houver um projeto ideal, entraremos em contato diretamente.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FATURAMENTO -->
+  <section id="faturamento">
+    <span class="tag lime">Faturamento</span>
+    <h2 class="sec-title">Como emitir sua <em>Nota Fiscal</em></h2>
+
+    <div class="cnpj-notice">
+      <span style="font-size:1.3rem;flex-shrink:0">🏛️</span>
+      <p>Para emitir Nota Fiscal de Serviços Eletrônica (NFS-e), você precisa ter um <strong>CNPJ ativo (MEI ou PJ)</strong>. Caso ainda não tenha, acesse o <a href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor" target="_blank">Portal do Empreendedor</a> e abra seu MEI gratuitamente.</p>
+    </div>
+
+    <div class="fat-card">
+      <div class="fat-header">
+        <span class="fat-hicon">🧾</span>
+        <div>
+          <h3>Emissão da Nota Fiscal</h3>
+          <p>Siga as instruções com atenção</p>
+        </div>
+      </div>
+      <div class="fat-body">
+
+        <div class="fat-row">
+          <div class="fat-ricon">📄</div>
+          <div>
+            <h5>Uma NF por vídeo</h5>
+            <p>Emita 1 Nota Fiscal separada para cada vídeo entregue. Se houver dois ou mais vídeos na mesma collab, emita uma nota para cada um.</p>
+          </div>
+        </div>
+
+        <div class="fat-row">
+          <div class="fat-ricon">🏢</div>
+          <div>
+            <h5>Emitir para a Winclap</h5>
+            <p>Emita a NF para o CNPJ:</p>
+            <code>34.553.298/0001-89 — WINCLAP DO BRASIL LTDA</code>
+          </div>
+        </div>
+
+        <div class="fat-row">
+          <div class="fat-ricon">✏️</div>
+          <div>
+            <h5>O que incluir na descrição</h5>
+            <p>Seu nome completo · Nome da marca · Mês de referência · Dados bancários completos · Se é conta PF ou PJ · CPF (PF) ou CNPJ (PJ)</p>
+          </div>
+        </div>
+
+        <div class="fat-row">
+          <div class="fat-ricon">📎</div>
+          <div>
+            <h5>Salvar e enviar</h5>
+            <p>Salve a NF em <strong>PDF</strong> e envie para:</p>
+            <code>paymentscreators@winclap.com</code>
+            <p style="margin-top:8px"><strong>Assunto:</strong> Seu nome + Marca + Mês</p>
+            <p style="margin-top:6px">⚠️ Envie pelo mesmo e-mail cadastrado no Brkaway.</p>
+            <button class="nf-btn" onclick="document.getElementById('nfModal').classList.add('open')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              Ver exemplo de Nota Fiscal
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- QUANDO VOCÊ RECEBE -->
+  <section>
+    <span class="tag lime">Prazo de pagamento</span>
+    <h2 class="sec-title">Quando você <em>recebe</em>?</h2>
+
+    <div class="prazo-grid">
+      <div class="prazo-item">
+        <div class="prazo-day">Dia 10</div>
+        <div class="prazo-label">limite para envio da Nota Fiscal</div>
+        <div class="prazo-sub">DO MÊS SEGUINTE À ENTREGA</div>
+      </div>
+      <div class="prazo-item">
+        <div class="prazo-day">Dia 20</div>
+        <div class="prazo-label">pagamento realizado até esta data</div>
+        <div class="prazo-sub">DO MÊS SEGUINTE À ENTREGA</div>
+      </div>
+    </div>
+
+    <div class="fat-highlight">
+      <p>O pagamento é feito no <strong>mês seguinte à entrega do vídeo</strong>, após a tarefa estar com status <strong>Delivered</strong> no Brkaway. Envie a NF até o <strong>dia 10 do mês seguinte</strong> para garantir o pagamento até o <strong>dia 20</strong>.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- QUEM PAGA OS IMPOSTOS -->
+  <section>
+    <span class="tag">Impostos</span>
+    <h2 class="sec-title">Quem paga <em>os impostos</em>?</h2>
+
+    <div class="alert-card pink" style="margin-bottom:12px">
+      <span class="alert-icon">⚠️</span>
+      <div>
+        <p>Os impostos são <strong class="pink-em">responsabilidade do criador</strong> e <strong>não devem ser incluídos na Nota Fiscal</strong>. Considere apenas o valor acordado pelo vídeo.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- COMO FUNCIONA O CONTRATO -->
+  <section>
+    <span class="tag">Contrato</span>
+    <h2 class="sec-title">Como funciona o <em>contrato</em>?</h2>
+
+    <div class="fat-row" style="border-radius:14px">
+      <div class="fat-ricon">📋</div>
+      <div>
+        <h5>Contrato padrão de imagem</h5>
+        <p>Utilizamos um contrato padrão de imagem para todas as colaborações criadas e aceitas dentro do Brkaway. <strong>Você deve assinar o contrato a cada nova colaboração.</strong> Ele será enviado e atrelado ao escopo dentro do Brkaway, formalizando todo o processo.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <span class="tag lime">Dúvidas</span>
+    <h2 class="sec-title">Perguntas <em>frequentes</em></h2>
+    <div class="acc-list">
+      <div class="acc-item">
+        <div class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Preciso ter muitos seguidores para participar?</span>
+          <div class="acc-icon">+</div>
+        </div>
+        <div class="acc-body">Não! O que importa é a qualidade do seu conteúdo e a sua criatividade. Criadores de todos os tamanhos são bem-vindos na comunidade.</div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-trigger" onclick="toggleAcc(this)">
+          <span>O cadastro é gratuito?</span>
+          <div class="acc-icon">+</div>
+        </div>
+        <div class="acc-body">Sim! O cadastro é 100% gratuito. Você só precisa acessar o link, preencher seu perfil e aguardar ser conectado a projetos.</div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Qual equipamento preciso ter?</span>
+          <div class="acc-icon">+</div>
+        </div>
+        <div class="acc-body">Apenas o seu celular! A maioria dos conteúdos é gravada com câmera de smartphone. Não precisa de câmera profissional nem estúdio.</div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Em quais plataformas vou criar conteúdo?</span>
+          <div class="acc-icon">+</div>
+        </div>
+        <div class="acc-body">Principalmente TikTok, Instagram Reels e YouTube Shorts. As marcas indicam as plataformas mais relevantes para cada campanha.</div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-trigger" onclick="toggleAcc(this)">
+          <span>A Winclap é uma assessoria de creators?</span>
+          <div class="acc-icon">+</div>
+        </div>
+        <div class="acc-body">Não. A Winclap não representa creators nem atua como assessoria. Somos uma plataforma de conexão entre criadores e marcas. Cada projeto é um contrato individual e independente — o valor recebido é exatamente o valor acordado no início de cada projeto, sem percentuais ou taxas cobradas de você.</div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-trigger" onclick="toggleAcc(this)">
+          <span>Como entrar em contato com a equipe Winclap?</span>
+          <div class="acc-icon">+</div>
+        </div>
+        <div class="acc-body">Pelo e-mail <a href="mailto:creatorsbrasil@winclap.com" style="color:var(--accent)">creatorsbrasil@winclap.com</a> ou pela aba de mensagens do Brkaway.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BOTTOM -->
+  <div class="cta-bottom">
+    <h2>Pronto para <em>decolar</em> como criador?</h2>
+    <p class="cta-sub">Cadastre-se agora e entre para a comunidade que conecta criadores com as marcas que você já ama.</p>
+    <a href="https://creator.brkaway.co/apply/winclap" target="_blank" class="hero-cta" style="width:auto;display:inline-flex">
+      Quero me cadastrar agora
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <span class="cta-url">creator.brkaway.co/apply/winclap</span>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <span class="nav-logo-text" style="font-size:1.2rem">Winclap<span class="nav-logo-accent"> Studio</span></span>
+  </div>
+  <div class="footer-social">
+    <a href="https://instagram.com/winclap.creators" target="_blank" class="footer-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
+      @winclap.creators
+    </a>
+    <a href="https://instagram.com/winclapcreatorsbr" target="_blank" class="footer-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
+      @winclapcreatorsbr
+    </a>
+    <a href="https://tiktok.com/@winclapcreatorsbr" target="_blank" class="footer-link">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg>
+      @winclapcreatorsbr
+    </a>
+    <a href="mailto:creatorsbrasil@winclap.com" class="footer-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg>
+      creatorsbrasil@winclap.com
+    </a>
+  </div>
+</footer>
+
+<script>
+function toggleMenu() {
+  const btn = document.getElementById('hamburger');
+  const drawer = document.getElementById('navDrawer');
+  btn.classList.toggle('open');
+  drawer.classList.toggle('open');
+}
+function toggleAcc(trigger) {
+  const item = trigger.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.acc-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+function closeNF(e) {
+  if (e.target === e.currentTarget) {
+    document.getElementById('nfModal').classList.remove('open');
+  }
+}
+</script>
+</body>
+</html>
