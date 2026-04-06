@@ -806,7 +806,7 @@ footer {
           <div>
             <h5>Salvar e enviar</h5>
             <p>Salve a NF em <strong>PDF</strong> e envie para:</p>
-            <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="19697860747c776d6a7a6b7c786d766b6a596e70777a757869377a7674">[email&#160;protected]</a></code>
+            <code><a href="mailto:paymentscreators@winclap.com" style="color:var(--accent)">paymentscreators@winclap.com</a></code>
             <p style="margin-top:8px"><strong>Assunto:</strong> Seu nome + Marca + Mês</p>
             <p style="margin-top:6px">⚠️ Envie pelo mesmo e-mail cadastrado no Brkaway.</p>
             <button class="nf-btn" onclick="document.getElementById('nfModal').classList.add('open')">
@@ -1017,25 +1017,16 @@ footer {
   });
 })();
 
+function toggleAcc(trigger) {
+  const item = trigger.closest('.acc-item');
+  item.classList.toggle('open');
+  const icon = trigger.querySelector('.acc-icon');
+  if (icon) icon.textContent = item.classList.contains('open') ? '×' : '+';
+}
+
 function toggleMenu() {
   const btn = document.getElementById('hamburger');
   const drawer = document.getElementById('navDrawer');
   btn.classList.toggle('open');
   drawer.classList.toggle('open');
 }
-
-function toggleAcc(trigger) {
-  const item = trigger.parentElement;
-  const wasOpen = item.classList.contains('open');
-  document.querySelectorAll('.acc-item').forEach(i => i.classList.remove('open'));
-  if (!wasOpen) item.classList.add('open');
-}
-
-function closeNF(e) {
-  if (e.target === e.currentTarget) {
-    document.getElementById('nfModal').classList.remove('open');
-  }
-}
-</script>
-</body>
-</html>
